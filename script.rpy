@@ -683,7 +683,7 @@ label start:
 
     pumpkin "Waaah! This has never happened before!"
 
-    "Pumpkin sobbed and blew his nose into a tiny handkerchief."
+    "Pumpkin sobs and blows his nose into a tiny handkerchief."
 
     pumpkin "Anyway…you should pack up…"
 
