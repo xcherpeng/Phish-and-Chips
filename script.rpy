@@ -695,7 +695,7 @@ label start:
 
     pumpkin "Yeah…sorry your internship had to end so suddenly…"
 
-    if cyberpoints == 3:
+    if cyberpoints == 4:
         jump good
 
     else:
