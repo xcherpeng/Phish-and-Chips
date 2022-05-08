@@ -2,7 +2,7 @@
 
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
-
+#define name = Character("Test Name")
 define name = Character("[name]")
 define pumpkin = Character("Pumpkin")
 define meow = Character("Meowricio")
@@ -24,8 +24,17 @@ default cyberpoints = 0
 # The game starts here.
 
 label start:
+    
     $ name = renpy.input("What's your name?", "Catya", length=15)
+    $ player_name = name.strip()
     "[name]! I love that!"
+
+    jump minigame_6
+    jump after_start
+    return
+
+label after_start:
+    
 
     # add in character selection here. Need the assets.
 
@@ -36,26 +45,26 @@ label start:
     catbot "Would you like me to explain how this game works?"
 
     menu:
-     "Yes":
-        menu:
-            "In this game, you make choices like this:"
+        "Yes":
+            menu:
+                "In this game, you make choices like this:"
 
-            "Ok":
-                name "Ok"
-            "Woah":
-                name "Woah"
-        catbot "These choices will be related to cyber security and digital literacy."
-        catbot "Don’t worry if you make “wrong” choices. Every choice you make is a learning opportunity!"
-        catbot "And even if you make a “wrong” choice, you can always go back and select a different choice!"
-        catbot "In addition to these choices, there will be fun minigames along the way!"
-        name "Cool! I’m ready!"
-        catbot "Let’s start!"
-        pass
+                "Ok":
+                    name "Ok"
+                "Woah":
+                    name "Woah"
+            catbot "These choices will be related to cyber security and digital literacy."
+            catbot "Don’t worry if you make “wrong” choices. Every choice you make is a learning opportunity!"
+            catbot "And even if you make a “wrong” choice, you can always go back and select a different choice!"
+            catbot "In addition to these choices, there will be fun minigames along the way!"
+            name "Cool! I’m ready!"
+            catbot "Let’s start!"
+            pass
 
 
-     "No":
-         catbot "Okay! Let’s start meow!"
-         pass
+        "No":
+            catbot "Okay! Let’s start meow!"
+            pass
 
     "Ah, Kitty City. The land of opportunities, fresh fish, and of course…high rent."
 
@@ -425,13 +434,232 @@ label start:
     name "Okay, thanks Snow."
 
     "Let’s do our first To-Do…"
+    jump minigame_1
+    return
+
+label minigame_1:
 
     # [Set up wifi game]
+    catbot "Alright! We need to start off by setting up the WIFI!"
 
-    "Nice! Now that I have my wifi secured, I can do To-Do number 2!"
+    catbot "Connecting to a good WIFI network is really important to be safe online!"
 
+    catbot "Pick the right WIFI network to use!"
+    
+    call screen wifi
+    jump minigame_2
+    return 
+
+screen wifi:
+    imagebutton auto "wifi/background_wifi_%s.png":
+        focus_mask True
+    imagebutton:
+        idle "wifi/op1_idle.png"
+        hover "wifi/op1_hover.png"
+        focus_mask True
+        action Jump("choice_1")
+    imagebutton:
+        idle "wifi/op2_idle.png"
+        hover "wifi/op2_hover.png"
+        focus_mask True
+        action Jump("choice_2")
+    imagebutton:
+        idle "wifi/op3_idle.png"
+        hover "wifi/op3_hover.png"
+        focus_mask True
+        action Jump("minigame_2")    
+    imagebutton:
+        idle "wifi/op4_idle.png"
+        hover "wifi/op4_hover.png"
+        focus_mask True
+        action Jump("choice_4")    
+    imagebutton:
+        idle "wifi/op5_idle.png"
+        hover "wifi/op5_hover.png"
+        focus_mask True
+        action Jump("choice_5")    
+    imagebutton:
+        idle "wifi/op6_idle.png"
+        hover "wifi/op6_hover.png"
+        focus_mask True
+        action Jump("choice_6")    
+
+label choice_1:
+    name "This is not protected! I shouldn't connect to this one. It's not safe"
+    
+    jump minigame_1
+    return
+
+label choice_2:
+    name "This is a hotspot. I probably shouldn't connect to it..."
+    "Don't want Doug to steal any of my information..."
+    jump minigame_1
+    return
+
+label choice_4:
+    name "This one might be safe but it's labeled Ethernet which is a little concerning..."
+    "Typically Ethernet isn't connected through WiFi. Let's see if there's a better option."
+    jump minigame_1
+    return
+
+label choice_5:
+    name "This seems to be a connection to Jerry's tablet. I probably shouldn't connect to this."
+    "I should let Jerry know later his network is visible..."
+    jump minigame_1
+    return
+
+label choice_6:
+    name "This is not protected! I shouldn't connect to this one. It's not safe"
+    jump minigame_1
+    return
+
+label minigame_2:
+    hide screen wifi
+    "This is the perfect wifi! It is secure, it is not someone's personal WiFi!"
+    "The name IS a bit silly tho..."
+    "Now that I have my wifi secured, I can do To-Do number 2!"
     # [Account set-up game]
 
+    jump trans_to_mini_2
+    return
+
+label trans_to_mini_2:
+
+    name "Alright! I should get my password set up for my company account!"
+    name "Normally I log in with my dance dance revolution pad! Hmm let me try my normal password"
+    python:
+        import random
+        randomlist = ""
+
+        for i in range(0,4):
+            n = str(random.randint(1,4))
+            randomlist = randomlist + n
+    jump trans_to_mini_2_after
+    return
+
+label trans_to_mini_2_after:
+    name "Normally my password is [randomlist]. Let me try that:"
+    python:
+        p11 = renpy.input("What's the first digit of the password?", length=1)
+        p11 = p11.strip()
+        while len(p11) != 1:
+            p11 = renpy.input("This isn't 1 digit! What's the first digit?", length=1)
+            p11 = p11.strip()
+        p11_pass = p11 == randomlist[0]
+
+    if p11_pass:
+        pass
+    elif not p11_pass:
+        "That's not correct! I should try again"
+        jump trans_to_mini_2_after
+
+    python:
+        p11 = renpy.input("What are the first two digits of the password?", length=2)
+        p11 = p11.strip()
+        p12_pass = p11 == randomlist[:2]
+
+    if p12_pass:
+        pass
+    elif not p12_pass:
+        "That's not correct! I should try again"
+        jump trans_to_mini_2_after
+
+    python:
+        p11 = renpy.input("What are the first three digits of the password?", length=3)
+        p11 = p11.strip()
+        p13_pass = p11 == randomlist[:3]
+
+    if p13_pass:
+        pass
+    elif not p13_pass:
+        "That's not correct! I should try again"
+        jump trans_to_mini_2_after    
+
+    python:
+        p11 = renpy.input("What are the first four digits of the password?", length=4)
+        p11 = p11.strip()
+        p14_pass = p11 == randomlist
+
+    if p14_pass:
+        pass
+    elif not p14_pass:
+        "That's not correct! I should try again"
+        jump trans_to_mini_2_after    
+
+    name "Yes! I remembered!"
+    "Hmmm..."
+    "Maybe it isn't the safest password. The system won't let me use it..."
+    "I need at least 8 characters, an uppercase, lowercase, symbol and a number"
+    "That's kind of hard to remember!"
+    jump trans_to_mini_2_after_final
+    return
+
+label trans_to_mini_2_after_final:
+    python:
+        passing = False
+    while not passing:
+        python:
+            import re 
+            passw = renpy.input("What is your password?", length=32)
+            passw = passw.strip()
+
+
+            up_p = 0
+            low_p = 0
+            special_p =0
+            num_p = 0
+            char_len = 0
+            string_check= re.compile("[@_!#$%^&*()<>?/\|}{~:]") 
+
+            for i in range(len(passw)):
+                if passw[i].islower():
+                    low_p = 1
+                if passw[i].isupper():
+                    up_p = 1
+                if passw[i].isdigit():
+                    num_p = 1
+                if not string_check.search(passw) == None:
+                    special_p = 1     
+            
+            in_mes = ""
+            if len(passw) < 8:
+                in_mes = in_mes + "This password is too short! "
+            if up_p == 0:
+                in_mes = in_mes + "There is no uppercase! "
+            if low_p == 0:
+                in_mes = in_mes + "There is no lowercase! "
+            if special_p == 0:
+                in_mes = in_mes + "There is no special character! "
+            if num_p == 0:
+                in_mes = in_mes + "There is no number! "
+            if in_mes == "":
+                in_mes = "This password is perfect! Good job!"
+                passing = True
+            final_mes = in_mes
+
+        name "[final_mes]"
+    jump during_minigame_2
+    return
+
+label during_minigame_2:
+    python:
+        passw2 = renpy.input("Wait what was my password again?", length=32)
+        passw2 = passw2.strip()
+        x = passw2 == passw
+    if not x:
+        name "hmm [passw2] is not correct!"
+        menu:
+            "What should I do?"
+            "Try again":
+                jump during_minigame_2
+            "Remake the password":
+                jump trans_to_mini_2
+    if x:
+        jump after_minigame_2
+
+    return    
+
+label after_minigame_2:
     name "Nice! I have my new account! Now all I need to do is…"
 
     "My laptop screen blacks out."
@@ -483,7 +711,10 @@ label start:
     "Doug points to a dark room."
 
     doug "I set my laptop up over there woof. I mean meow. Just be careful when you login...there might be some cybersecurity risks in there that you need to take care of first."
+    jump minigame_3
+    return
 
+label minigame_3:
     # [Click on all the cyber security hazards game]
 
     doug "Well done. Here you go."
@@ -493,9 +724,84 @@ label start:
     # [A screen where you login and you cannot proceed unless you click on the “do not remember password” check mark]
 
     # Catbot (if they don’t check it): Don’t forget to click on the do not remember password button! If Doug has your login saved, he can access your information!
+    jump minigame_4
+    return
 
+label pre_minigame_4:
+    #Init for minigame
+    python:
+        contin = True
+    python:
+        emails_done = 0
+        outs = 0
+        outs_dis = 0
+        points = 0
+        max_outs = 3 - 1 #3 is the max number of outs
+        max_points = 10 #Max emails
+        real_list = ["emails/real1.png", "emails/real2.png", "emails/real3.png", "emails/real4.png", "emails/real5.png"]
+        phish_list = ["emails/phish1.png", "emails/phish2.png", "emails/phish3.png", "emails/phish4.png", "emails/phish5.png"]
+        order = [real_list[1], real_list[2], phish_list[0], phish_list[1], real_list[0], phish_list[2],
+                real_list[4], phish_list[3], real_list[3], phish_list[4]]
+    jump paws_check
+    return
+
+label paws_check:
+    while contin:
+        python:
+            curr = order[emails_done]
+            emails_done = emails_done + 1
+            if emails_done == max_points:
+                contin = False
+            if outs == max_outs:
+                contin = False
+        call screen up_down
+    if not contin:
+        jump after_minigame_4
+    return 
+
+screen up_down:
+    imagebutton:
+        idle "emails/paws_down.png"
+        hover "emails/paws_down_hover.png"
+        focus_mask True
+        action Jump("paws_down_lab")
+    imagebutton:
+        idle "emails/paws_up.png"
+        hover "emails/paws_up_hover.png"
+        focus_mask True
+        action Jump("paws_up_lab")
+    imagebutton:
+        idle [order[emails_done-1]]
+        focus_mask True
+
+label paws_down_lab:
+    python:
+        if order[emails_done - 1] in phish_list:
+            points = points + 1
+        elif order[emails_done - 1] in real_list:
+            outs = outs + 1
+            outs_dis = outs
+    "You have clicked paws down. Points: [points]. Outs: [outs_dis]"
+    jump paws_check
+    return
+
+label paws_up_lab:
+    python:
+        if order[emails_done - 1] in real_list:
+            points = points + 1
+        elif order[emails_done - 1] in phish_list:
+            outs = outs + 1
+            outs_dis = outs
+    "You have clicked paws up. Points: [points]. Outs: [outs_dis]"
+    jump paws_check
+    return
+
+label minigame_4:
     # [The email game; you have to remember to LOGOUT in order to end the game]
+    jump pre_minigame_4
+    return
 
+label after_minigame_4:
     doug "Hey, [name]. Are you done with your emails?"
 
     name "Yeah! Thanks for letting me borrow your laptop, Doug!"
@@ -572,9 +878,116 @@ label start:
     "I still have some assignments on the To-Do List."
 
     "Looks like I need to do some research on clients."
+    jump minigame_5
+    return
 
+screen doors:
+    imagebutton:
+        idle "net/left_close.png"
+        hover "net/left_opening.png"        
+        focus_mask True
+        action Jump("jump after_minigame_5")
+    imagebutton:
+        focus_mask True
+        idle "net/right_close.png"
+        hover "net/right_opening.png"
+        action Jump("paws_down_lab")
+
+screen doors1:
+    imagebutton:
+        idle "net/1lc.png"
+        hover "net/1lo.png"
+        focus_mask True
+        action Jump("to_door_2")
+    imagebutton:
+        idle "net/1rc.png"
+        hover "net/1ro.png"
+        focus_mask True
+        action Jump("try_again_doors")
+
+screen doors2:
+    imagebutton:
+        idle "net/2lc.png"
+        hover "net/2lo.png"
+        focus_mask True
+        action Jump("try_again_doors")
+    imagebutton:
+        idle "net/2rc.png"
+        hover "net/2ro.png"
+        focus_mask True
+        action Jump("to_doors_3")
+
+screen doors3:
+    imagebutton:
+        idle "net/3lc.png"
+        hover "net/3lo.png"
+        focus_mask True
+        action Jump("to_doors_4")
+    imagebutton:
+        idle "net/3rc.png"
+        hover "net/3ro.png"
+        focus_mask True
+        action Jump("try_again_doors")
+
+screen doors4:
+    imagebutton:
+        idle "net/4lc.png"
+        hover "net/4lo.png"
+        focus_mask True
+        action Jump("try_again_doors")
+    imagebutton:
+        idle "net/4rc.png"
+        hover "net/4ro.png"
+        focus_mask True
+        action Jump("to_doors_5")
+
+screen doors5:
+    imagebutton:
+        idle "net/5lc.png"
+        hover "net/5lo.png"
+        focus_mask True
+        action Jump("after_minigame_5")
+    imagebutton:
+        idle "net/5rc.png"
+        hover "net/5ro.png"
+        focus_mask True
+        action Jump("try_again_doors")
+
+label minigame_5:
     # [Traversing the web (add in something about secure and insecure networks). A puzzle game where you have to get through all the right doors]
+    "When I'm on the web, I need to be super careful! Let me make sure to only go on sites that are safe to traverse onto."
+    call screen doors1
+    return
 
+label to_door_2:
+    "Good job! We should try to only go on sites with https!"
+    "https means the site has an ssl certicate and is more likely to be safe"
+    call screen doors2
+    return
+
+label to_doors_3:
+    "Good job! Some websites have weird numbers in their name to pretend to be sites they're not!"
+    call screen doors3
+    return
+
+label to_doors_4:
+    "Amazing! In the search bar, it'll sometimes tell you if a website is secure or not!"
+    call screen doors4
+    return
+
+label to_doors_5:
+    "Fantastic! Some times you get weird links which do not give you a proper addresses."
+    "Try to avoid this if possible."
+    call screen doors5
+    return
+
+label try_again_doors:
+    "That's not correct but nice try! Let's try to find the correct safe websites again!"
+    jump minigame_5
+    return
+
+label after_minigame_5:
+    "Perfect! Some bad sites will add something at the starting to confuse the user."
     "Nice. I compiled everything into a zip file. Now I just need to send it over…"
 
     "*Ding*"
@@ -688,9 +1101,106 @@ label start:
     pumpkin "Anyway…you should pack up…"
 
     name "Yeah…I guess so…"
+    
+    Name "Alright time to clean up! I have to clean the proper areas!"
+    "Press the right keys on areas we think might be dirty to clean!"
+    jump minigame_6
+    return
 
-    # [Cleaning minigame]
+label minigame_6:
+    #init
+    $cont_minigame = 0
+    $cont = 0
+    $arr_keys = ["c", "e", "K_UP", "K_SPACE", "K_DOWN"]
+    $wins = 0
+    $loses = 0
+    $max_win = 15 
 
+    while not wins + loses == max_win:
+        call qte_setup(0.99, 0.99, 0.01, renpy.random.choice(arr_keys), renpy.random.randint(1, 9) * 0.1, renpy.random.randint(1, 9) * 0.1)
+        python:
+            if cont == 1:
+                wins = wins +1
+            elif cont == 0:
+                loses = loses + 1
+
+    if loses > 3:
+        "Oh no! We didn't clean up well enough! This place is still is a mess! Let's try again"
+        jump minigame_6
+    elif wins > 10:
+        "Perfect! This place is more clean now!"
+        "Hmmm... "
+        "There's still a bit of a mess left. I should try to clean some harder to reach places now."
+        jump minigame_6_2
+    return
+
+label minigame_6_2:
+    #init
+    $cont_minigame = 0
+    $cont = 0
+    $arr_keys = ["c", "e", "K_UP", "K_SPACE", "K_DOWN"]
+    $wins = 0
+    $loses = 0
+    $max_win = 10 
+
+    while not wins + loses == max_win:
+        call qte_setup(0.65, 0.65, 0.01, renpy.random.choice(arr_keys), renpy.random.randint(1, 9) * 0.1, renpy.random.randint(1, 9) * 0.1)
+        python:
+            if cont == 1:
+                wins = wins +1
+            elif cont == 0:
+                loses = loses + 1
+
+    if loses > 2:
+        "Oh no! We didn't clean up well enough! This place is still is a mess! Let's try again"
+        jump minigame_6_2
+    if wins > 7:
+        "Perfect! This place is more clean now!"
+        "Hmmm... "
+        "I should go check up on Pumpkin"
+        jump after_minigame_6
+    return
+
+
+label qte_setup(time_start, time_max, interval, trigger_key, x_align, y_align):
+    $ time_start = time_start
+    $ time_max = time_max
+    $ interval = interval
+    $ trigger_key = trigger_key
+    $ x_align = x_align
+    $ y_align = y_align
+
+    call screen qte_keyboard
+
+    $ cont = _return
+
+    return
+
+screen qte_keyboard:
+
+    timer interval repeat True action If(time_start > 0.0, true=SetVariable('time_start', time_start - interval), false=[Return(0), Hide('qte_keyboard')])
+    key trigger_key action (Return(1))
+
+    vbox:
+        xalign x_align
+        yalign y_align
+        spacing 25
+
+        text trigger_key:
+            xalign 0.5
+            color "#fff"
+            size 36
+
+        bar:
+            value time_start
+            range time_max
+            xalign 0.5
+            xmaximum 300
+            if time_start < (time_max * 0.25):
+                left_bar "#f00"
+
+
+label after_minigame_6:
     name "Hey, Pumpkin…are you going to be alright?"
 
     pumpkin "Yeah…sorry your internship had to end so suddenly…"
@@ -753,33 +1263,5 @@ label start:
         "Feel free to play again to see how other choices impact the story!"
 
         return
-
-    
-
-     # scene transition
-
-
-
-
-
-
-
-    # Show a background. This uses a placeholder by default, but you can
-    # add a file (named either "bg room.png" or "bg room.jpg") to the
-    # images directory to show it.
-
-    # scene
-
-    # This shows a character sprite. A placeholder is used, but you can
-    # replace it by adding a file named "eileen happy.png" to the images
-    # directory.
-
-    #show eileen happy
-
-    # These display lines of dialogue.
-
-
-
-    # This ends the game.
 
     return
